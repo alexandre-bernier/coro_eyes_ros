@@ -1,0 +1,37 @@
+cmake_minimum_required(VERSION 3.18)
+project(coro_eyes_ros)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# coro_eyes_sdk
+find_package(coro_eyes_sdk REQUIRED)
+if(coro_eyes_sdk_FOUND)
+	message("Found CoRo_Eyes_SDK")
+else()
+	message(FATAL_ERROR "Can't find CoRo_Eyes_SDK")
+endif()
+
+# ROS packages
+find_package(catkin REQUIRED COMPONENTS
+	roscpp
+	rospy
+	std_msgs
+	sensor_msgs
+	image_transport
+	cv_bridge)
+catkin_package(CATKIN_DEPENDS
+	roscpp
+	rospy
+	std_msgs
+	sensor_msgs
+	image_transport
+	cv_bridge)
+include_directories(${catkin_INCLUDE_DIRS})
+
+# Camera calibration
+add_executable(camera_calibration nodes/camera_calibration.cpp)
+target_link_libraries(camera_calibration ${catkin_LIBRARIES} coro_eyes_sdk)
+install(TARGETS camera_calibration DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
