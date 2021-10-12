@@ -30,8 +30,13 @@ catkin_package(CATKIN_DEPENDS
 	cv_bridge)
 include_directories(${catkin_INCLUDE_DIRS})
 
-# Camera calibration
+# Camera calibration node
 add_executable(camera_calibration nodes/camera_calibration.cpp)
 target_link_libraries(camera_calibration ${catkin_LIBRARIES} coro_eyes_sdk)
-install(TARGETS camera_calibration DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+# Adjust focus node
+add_executable(adjust_focus nodes/adjust_focus.cpp)
+target_link_libraries(adjust_focus ${catkin_LIBRARIES} coro_eyes_sdk)
+
+install(TARGETS camera_calibration adjust_focus DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
