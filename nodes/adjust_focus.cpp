@@ -121,12 +121,10 @@ int main(int argc, char** argv)
         ros::shutdown();
         return -1;
     }
-//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 
     // Generate projected patterns
     ROS_INFO("Generating projected patterns...\n");
-
     bool upload_patterns = false;
     dlp::Parameters upload_patterns_param;
     upload_patterns_param.Set(dlp::DLP_Platform::Parameters::SequencePrepared(!upload_patterns));

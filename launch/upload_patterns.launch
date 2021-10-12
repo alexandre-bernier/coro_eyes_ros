@@ -1,0 +1,11 @@
+<!--
+Brief:	Launch file to start the upload patterns node
+Date:	2021-10-12
+Email:	ab.alexandre.bernier@gmail.com
+-->
+<launch>
+	<!-- Camera calibration node -->
+	<node ns="coro_eyes" name="upload_patterns" pkg="coro_eyes_ros" type="upload_patterns" output="screen" required="true">
+		<param name="config_path" value="$(find coro_eyes_ros)/config"/>
+	</node>
+</launch>

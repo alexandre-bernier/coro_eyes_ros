@@ -51,7 +51,11 @@ The coro_eyes_ros package has been tested on Ubuntu 20.04 with the following dep
            cd build/
            cmake -DBUILD_SHARED_LIBS=ON -DGLIBCXX_USE_CXX11_ABI=1 -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
            sudo cmake --build . --config Release --parallel 12 --target install
-           
+
+
+### Configurations
+
+Before building, go to `coro_eyes_ros/config/dlp_plataforms/projector_settings.txt` and make sure that `LCR4500_PARAMETERS_DLPC350_FIRMWARE` and `LCR4500_PARAMETERS_DLPC350_FLASH_PARAMETERS` have the right path.
 
 ### Building from source
 
