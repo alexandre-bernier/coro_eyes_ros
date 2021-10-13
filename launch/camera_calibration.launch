@@ -4,9 +4,9 @@ Date:	2021-10-07
 Email:	ab.alexandre.bernier@gmail.com
 -->
 <launch>
-	<!-- Arguments -->
-	<arg name="left_image_topic" default="/coro_eyes/left/image"/>
-	<arg name="right_image_topic" default="/coro_eyes/right/image"/>
+	<!-- Constants -->
+	<arg name="left_image_topic" value="/coro_eyes/left/image"/>
+	<arg name="right_image_topic" value="/coro_eyes/right/image"/>
 	
 	<!-- Camera calibration node -->
 	<node ns="coro_eyes" name="camera_calibration" pkg="coro_eyes_ros" type="camera_calibration" output="screen" required="true">
