@@ -13,14 +13,25 @@ else()
 	message(FATAL_ERROR "Can't find CoRo_Eyes_SDK")
 endif()
 
-# ROS packages
+# ROS
 find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	rospy
 	std_msgs
+	message_generation
 	sensor_msgs
 	image_transport
 	cv_bridge)
+add_service_files(
+	FILES
+	Scan.srv
+)
+generate_messages(
+	DEPENDENCIES
+	std_msgs
+	geometry_msgs
+	sensor_msgs
+)
 catkin_package(CATKIN_DEPENDS
 	roscpp
 	rospy
@@ -42,5 +53,10 @@ target_link_libraries(adjust_focus ${catkin_LIBRARIES} coro_eyes_sdk)
 add_executable(upload_patterns nodes/upload_patterns.cpp)
 target_link_libraries(upload_patterns ${catkin_LIBRARIES} coro_eyes_sdk)
 
-install(TARGETS camera_calibration adjust_focus upload_patterns DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# Scan node
+add_executable(scan nodes/scan.cpp)
+target_link_libraries(scan ${catkin_LIBRARIES} coro_eyes_sdk)
+
+# Install
+install(TARGETS camera_calibration adjust_focus upload_patterns scan DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

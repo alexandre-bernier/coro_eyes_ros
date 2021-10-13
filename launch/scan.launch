@@ -1,0 +1,31 @@
+<!--
+Brief:	Launch file to start the CoRo Eyes scan service
+Date:	2021-10-13
+Email:	ab.alexandre.bernier@gmail.com
+-->
+<launch>
+	<!-- Arguments -->
+	<arg name="show_camera_feed" default="false"/>
+
+	<!-- Constants -->
+	<arg name="left_image_topic" value="/coro_eyes/left/image"/>
+	<arg name="right_image_topic" value="/coro_eyes/right/image"/>
+	
+	<!-- Camera calibration node -->
+	<node ns="coro_eyes" name="scan" pkg="coro_eyes_ros" type="scan" output="screen" required="true">
+		<param name="config_path" value="$(find coro_eyes_ros)/config"/>
+		<param name="show_camera_feed" value="$(arg show_camera_feed)"/>
+		<param name="left_image_topic" value="$(arg left_image_topic)"/>
+		<param name="right_image_topic" value="$(arg right_image_topic)"/>
+	</node>
+	
+	<!-- Camera feeds -->
+	<node if="$(arg show_camera_feed)" ns="coro_eyes/left" name="camera_feed" pkg="image_view" type="image_view">
+		<param name="image" value="$(arg left_image_topic)"/>
+		<param name="window_name" value="Camera feed (left)"/>
+	</node>
+	<node if="$(arg show_camera_feed)" ns="coro_eyes/right" name="camera_feed" pkg="image_view" type="image_view">
+		<param name="image" value="$(arg right_image_topic)"/>
+		<param name="window_name" value="Camera feed (right)"/>
+	</node>
+</launch>
