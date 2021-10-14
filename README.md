@@ -30,7 +30,7 @@ The coro_eyes_ros package has been tested on Ubuntu 20.04 with the following dep
     
 - [Open3D](http://www.open3d.org/) (optional)
 
-        pip3 install open3d
+      pip3 install open3d
 
 ### Configurations
 
