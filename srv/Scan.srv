@@ -1,2 +1,2 @@
 ---
-sensor_msgs/PointCloud point_cloud
+sensor_msgs/PointCloud2 point_cloud

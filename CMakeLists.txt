@@ -18,8 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	rospy
 	std_msgs
-	message_generation
 	sensor_msgs
+	message_generation
 	image_transport
 	cv_bridge)
 add_service_files(
@@ -29,7 +29,6 @@ add_service_files(
 generate_messages(
 	DEPENDENCIES
 	std_msgs
-	geometry_msgs
 	sensor_msgs
 )
 catkin_package(CATKIN_DEPENDS
@@ -57,6 +56,9 @@ target_link_libraries(upload_patterns ${catkin_LIBRARIES} coro_eyes_sdk)
 add_executable(scan nodes/scan.cpp)
 target_link_libraries(scan ${catkin_LIBRARIES} coro_eyes_sdk)
 
-# Install
+# Install cpp nodes
 install(TARGETS camera_calibration adjust_focus upload_patterns scan DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+# Install python nodes
+catkin_install_python(PROGRAMS scripts/coro_eyes.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

@@ -11,7 +11,7 @@ Email:	ab.alexandre.bernier@gmail.com
 	<arg name="left_image_topic" value="/coro_eyes/left/image"/>
 	<arg name="right_image_topic" value="/coro_eyes/right/image"/>
 	
-	<!-- Camera calibration node -->
+	<!-- Scan node -->
 	<node ns="coro_eyes" name="scan" pkg="coro_eyes_ros" type="scan" output="screen" required="true">
 		<param name="config_path" value="$(find coro_eyes_ros)/config"/>
 		<param name="show_camera_feed" value="$(arg show_camera_feed)"/>

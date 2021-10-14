@@ -1,7 +1,8 @@
 #include <coro_eyes_sdk.h>
 #include <ros/ros.h>
-#include <geometry_msgs/Point32.h>
-#include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/PointField.h>
+#include <sensor_msgs/point_cloud2_iterator.h>
 #include <thread>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -156,15 +157,26 @@ bool scan(coro_eyes_ros::Scan::Request &req, coro_eyes_ros::Scan::Response &res)
     // Compute point cloud
     std::vector<cv::Point3f> point_cloud = ref_structured_light->compute_point_cloud(disparity_map, stereo_calib_data.Q);
 
-    // Convert OpenCV point cloud to ROS sensor_msgs/PointCloud
-    geometry_msgs::Point32 point;
-    for(auto pt=point_cloud.begin(); pt!=point_cloud.end(); pt++) {
-        point.x = (*pt).x;
-        point.y = (*pt).y;
-        point.z = (*pt).z;
-        res.point_cloud.points.push_back(point);
-    }
+    // Convert OpenCV point cloud to ROS sensor_msgs/PointCloud2
+    res.point_cloud.header = std_msgs::Header();
     res.point_cloud.header.frame_id = "coro_eyes";
+    res.point_cloud.height = 1;
+    res.point_cloud.width  = point_cloud.size();
+    res.point_cloud.is_bigendian = false;
+    res.point_cloud.is_dense = true;
+
+    sensor_msgs::PointCloud2Modifier pcd_modifier(res.point_cloud);
+    pcd_modifier.setPointCloud2FieldsByString(1, "xyz");
+
+    sensor_msgs::PointCloud2Iterator<float> iter_x(res.point_cloud, "x");
+    sensor_msgs::PointCloud2Iterator<float> iter_y(res.point_cloud, "y");
+    sensor_msgs::PointCloud2Iterator<float> iter_z(res.point_cloud, "z");
+
+    for(auto pt=point_cloud.begin(); pt!=point_cloud.end(); ++pt, ++iter_x, ++iter_y, ++iter_z) {
+        *iter_x = (*pt).x;
+        *iter_y = (*pt).y;
+        *iter_z = (*pt).z;
+    }
 
     // If we were showing the camera feed, change settings to see with ambient light
     if(show_camera_feed) {
@@ -196,8 +208,7 @@ int main(int argc, char** argv) {
     // Init ROS
     ros::init(argc, argv, "scan");
     ros::NodeHandle node;
-    ros::ServiceServer service = node.advertiseService("Scan", scan);
-    point_cloud_pub = node.advertise<sensor_msgs::PointCloud>("point_cloud", 1);
+    point_cloud_pub = node.advertise<sensor_msgs::PointCloud2>("point_cloud_raw", 1);
 
 
     // Load values from param server
@@ -424,8 +435,12 @@ int main(int argc, char** argv) {
     }
 
 
-    // Loop
+    // Create service now that the CoRo Eyes is ready
+    ros::ServiceServer service = node.advertiseService("Scan", scan);
     ROS_INFO("CoRo Eyes is ready to scan.\n");
+
+
+    // Loop
     ros::spin();
 
 

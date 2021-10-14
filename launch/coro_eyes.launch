@@ -1,0 +1,17 @@
+<!--
+Brief:	Launch file to start the CoRo Eyes application
+Date:	2021-10-13
+Email:	ab.alexandre.bernier@gmail.com
+-->
+<launch>
+	<!-- Arguments -->
+	<arg name="show_camera_feed" default="false"/>
+	
+	<!-- Launch scan node -->
+	<include file="$(find coro_eyes_ros)/launch/scan.launch">
+	    <arg name="show_camera_feed" value="$(arg show_camera_feed)"/>
+    </include>
+
+    <!-- Application node -->
+    <node ns="coro_eyes" name="coro_eyes" pkg="coro_eyes_ros" type="coro_eyes.py" output="screen" required="true"/>
+</launch>
