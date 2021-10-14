@@ -50,8 +50,10 @@ def ask_for_command():
 
 
 def post_processing(raw_point_cloud):
+    # Filter outliers
+    new_point_cloud, ind = raw_point_cloud.remove_radius_outlier(nb_points=14, radius=5)
 
-    return raw_point_cloud
+    return new_point_cloud
 
 
 if __name__ == '__main__':
