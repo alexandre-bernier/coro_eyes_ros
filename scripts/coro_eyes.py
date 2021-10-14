@@ -12,8 +12,7 @@ from coro_eyes_ros.srv import *
 FIELDS_XYZ = [
     PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
     PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
-    PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
-]
+    PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1)]
 
 
 def from_ros_msgs(ros_point_cloud):

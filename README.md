@@ -18,7 +18,7 @@ The coro_eyes_ros package has been tested on Ubuntu 20.04 with the following dep
 
 | Dependencies | Version |
 | --- | --- |
-| coro_eyes_sdk | 1.0 |
+| coro_eyes_sdk | main |
 | Open3D (optional) | 0.13.0 |
 
 ## Installation
