@@ -6,6 +6,7 @@ Email:	ab.alexandre.bernier@gmail.com
 <launch>
 	<!-- Arguments -->
 	<arg name="show_camera_feed" default="false"/>
+	<arg name="show_visualizer" default="true"/>
 	
 	<!-- Launch scan node -->
 	<include file="$(find coro_eyes_ros)/launch/scan.launch">
@@ -14,4 +15,7 @@ Email:	ab.alexandre.bernier@gmail.com
 
     <!-- Application node -->
     <node ns="coro_eyes" name="coro_eyes" pkg="coro_eyes_ros" type="coro_eyes.py" output="screen" required="true"/>
+
+    <!-- Visualizer node -->
+    <node if="$(arg show_visualizer)" ns="coro_eyes" name="point_cloud_visualizer" pkg="coro_eyes_ros" type="pc_visualizer.py" output="screen" args="/coro_eyes/point_cloud"/>
 </launch>

@@ -54,16 +54,19 @@ Multiple launch files are available depending on what you wish to do:
 
 - <b>CoRo Eyes</b>
 
-Launching this node will call the Scan node as well as the post-processing node `scripts/coro_eyes.py`.
-The post-processing node listens to user inputs and calls the `coro_eyes/Scan` service. If you wish to apply any post-processing
-with Open3D, you can write your own code in the `post_processing` function in `scripts/coro_eyes.py`. The processed
-point cloud will be published to the `/coro_eyes/point_cloud` topic.
+Launching this node will call the Scan node, the post-processing node `scripts/coro_eyes.py` and the point cloud
+visualizer node `scripts/pc_visualizer.py`. The post-processing node listens to user inputs and calls the `coro_eyes/Scan` service. If you wish
+to apply any post-processing with Open3D, you can write your own code in the `post_processing` function in
+`scripts/coro_eyes.py`. The processed point cloud will be published to the `/coro_eyes/point_cloud` topic and displayed
+by the visualizer node.
 
     roslaunch coro_eyes_ros coro_eyes.launch
 
 Arguments:
 
 `show_camera_feed` You can show or hide the camera feed. Default: `false`.
+
+`show_visualizer` You can show or hide the point cloud visualizer. Default: `true`.
 
 - <b>Scan</b>
 
@@ -76,6 +79,12 @@ either in the service call response or by subscribing to the `/coro_eyes/raw_poi
 Arguments:
 
 `show_camera_feed` You can show or hide the camera feed. Default: `false`.
+
+- <b>Point cloud visualizer</b>
+
+This node connects to a topic of type `sensor_msgs/PointCloud2` and displays the point cloud received.
+
+    rosrun coro_eyes_ros pc_visualizer.py /coro_eyes/point_cloud
 
 - <b>Camera calibration</b>
 

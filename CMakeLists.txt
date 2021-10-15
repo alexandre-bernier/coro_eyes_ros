@@ -26,6 +26,7 @@ add_service_files(
 	FILES
 	Scan.srv
 )
+catkin_python_setup()
 generate_messages(
 	DEPENDENCIES
 	std_msgs
@@ -60,5 +61,5 @@ target_link_libraries(scan ${catkin_LIBRARIES} coro_eyes_sdk)
 install(TARGETS camera_calibration adjust_focus upload_patterns scan DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # Install python nodes
-catkin_install_python(PROGRAMS scripts/coro_eyes.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+catkin_install_python(PROGRAMS scripts/coro_eyes.py scripts/pc_visualizer.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
