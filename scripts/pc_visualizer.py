@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import open3d
+import numpy as np
 
 import rospy
 from pc_utility import convert
@@ -30,9 +31,9 @@ if __name__ == '__main__':
     # Start visualizer
     vis = open3d.visualization.Visualizer()
     vis.create_window()
-    vis.get_view_control().set_front([0, 0.14, -1])
-    vis.get_view_control().set_lookat([-127, -6, 700])
-    vis.get_view_control().set_up([0, -1, -0.14])
+    vis.get_view_control().set_front([0, 0.1, -1])
+    vis.get_view_control().set_lookat([-0.12, 0, 0.7])
+    vis.get_view_control().set_up([0, -1, -0.1])
 
     # Loop
     while not rospy.is_shutdown():
