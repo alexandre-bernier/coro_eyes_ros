@@ -56,4 +56,4 @@ if __name__ == '__main__':
         vis.poll_events()
         vis.update_renderer()
 
-        rospy.sleep(0.01)
+        rospy.sleep(0.1)
