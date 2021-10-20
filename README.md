@@ -45,7 +45,6 @@ To build from source, clone the latest version from this repository into your ca
 	cd catkin_ws/src
 	git clone https://github.com/alexandre-bernier/coro_eyes_ros.git
 	cd ../
-	rosdep install --from-paths . --ignore-src
 	catkin_make
 
 ## Usage
