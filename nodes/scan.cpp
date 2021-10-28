@@ -19,7 +19,10 @@ const std::string param_right_image_topic = "~right_image_topic";
 const float image_scale = 0.4;
 const unsigned int num_required_cameras = 2;
 
+ros::Publisher camera_info_pub;
 ros::Publisher point_cloud_pub;
+image_transport::Publisher depth_map_pub;
+image_transport::Publisher depth_map_cropped_pub;
 
 dlp::LCr4500 projector; // Instance of the projector (DLP)
 unsigned int proj_sequence_duration = 0;
@@ -138,12 +141,12 @@ bool scan(coro_eyes_ros::Scan::Request &req, coro_eyes_ros::Scan::Response &res)
     // Remap images
     std::vector<std::vector<cv::Mat> > remapped_images;
     remapped_images.resize(num_avail_cameras);
-    if(!Calibration::remap_images(captured_patterns[camR_index], reprojection_maps[camR_index], remapped_images[0])) {
-        ROS_ERROR("Error while remapping the captured patterns of the right camera.\n");
+    if(!Calibration::remap_images(captured_patterns[camL_index], reprojection_maps[camL_index], remapped_images[0])) {
+        ROS_ERROR("Error while remapping the captured patterns of the left camera.\n");
         return false;
     }
-    if(!Calibration::remap_images(captured_patterns[camL_index], reprojection_maps[camL_index], remapped_images[1])) {
-        ROS_ERROR("Error while remapping the captured patterns of the left camera.\n");
+    if(!Calibration::remap_images(captured_patterns[camR_index], reprojection_maps[camR_index], remapped_images[1])) {
+        ROS_ERROR("Error while remapping the captured patterns of the right camera.\n");
         return false;
     }
 
@@ -159,6 +162,7 @@ bool scan(coro_eyes_ros::Scan::Request &req, coro_eyes_ros::Scan::Response &res)
 
     // Convert OpenCV point cloud to ROS sensor_msgs/PointCloud2
     res.point_cloud.header = std_msgs::Header();
+    res.point_cloud.header.stamp = ros::Time::now();
     res.point_cloud.header.frame_id = "coro_eyes";
     res.point_cloud.height = 1;
     res.point_cloud.width  = point_cloud.size();
@@ -178,6 +182,9 @@ bool scan(coro_eyes_ros::Scan::Request &req, coro_eyes_ros::Scan::Response &res)
         *iter_z = (*pt).z;
     }
 
+    // Compute depth map
+    cv::Mat depth_map = ref_structured_light->compute_depth_map(disparity_map, stereo_calib_data.Q);
+
     // If we were showing the camera feed, change settings to see with ambient light
     if(show_camera_feed) {
         for(unsigned int i_cam=0; i_cam<num_avail_cameras; i_cam++) {
@@ -191,7 +198,19 @@ bool scan(coro_eyes_ros::Scan::Request &req, coro_eyes_ros::Scan::Response &res)
     double execution_time = (end - start).toNSec() * 1e-6;
     ROS_INFO("Scan completed in %.2fms.\n", execution_time);
 
+    // Publish point cloud
     point_cloud_pub.publish(res);
+
+    // Publish raw depth map
+    std_msgs::Header depth_map_header;
+    depth_map_header.stamp = ros::Time::now();
+    depth_map_header.frame_id = "coro_eyes";
+    cv_bridge::CvImage cv_frame(depth_map_header, "32FC1", depth_map);
+    depth_map_pub.publish(cv_frame.toImageMsg());
+
+    // Publish cropped depth map
+    cv_frame = cv_bridge::CvImage(depth_map_header, "32FC1", depth_map(stereo_calib_data.validROI2));
+    depth_map_cropped_pub.publish(cv_frame.toImageMsg());
 
     return true;
 }
@@ -208,8 +227,11 @@ int main(int argc, char** argv) {
     // Init ROS
     ros::init(argc, argv, "scan");
     ros::NodeHandle node;
+    image_transport::ImageTransport it(node);
+    camera_info_pub = node.advertise<sensor_msgs::CameraInfo>("camera_info", 1);
     point_cloud_pub = node.advertise<sensor_msgs::PointCloud2>("point_cloud_raw", 1);
-
+    depth_map_pub = it.advertise("depth_map_raw", 1);
+    depth_map_cropped_pub = it.advertise("depth_map_cropped", 1);
 
     // Load values from param server
     if(!ros::param::get(param_config_path, config_path)) {
@@ -416,7 +438,6 @@ int main(int argc, char** argv) {
 
     // Create image publishers and start camera capture
     ROS_INFO("Starting camera capture...\n");
-    image_transport::ImageTransport it(node);
     image_transport::Publisher camera_new_frame_pub[num_avail_cameras];
     for(unsigned int i_cam=0; i_cam < num_avail_cameras; i_cam++) {
         // Camera feed
@@ -441,7 +462,22 @@ int main(int argc, char** argv) {
 
 
     // Loop
-    ros::spin();
+    ros::Rate loop_rate(10);
+    sensor_msgs::CameraInfo camera_info;
+    camera_info.width = camera[0].get_camera_width();
+    camera_info.height = camera[0].get_camera_height();
+    camera_info.header.frame_id = "coro_eyes";
+    camera_info.roi.width = stereo_calib_data.validROI2.width;
+    camera_info.roi.height = stereo_calib_data.validROI2.height;
+    camera_info.roi.x_offset = stereo_calib_data.validROI2.x;
+    camera_info.roi.y_offset = stereo_calib_data.validROI2.y;
+
+    while(ros::ok()) {
+        camera_info.header.stamp = ros::Time::now();
+        camera_info_pub.publish(camera_info);
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
 
 
     // Disconnect from projector

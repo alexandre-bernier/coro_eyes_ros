@@ -1,0 +1,21 @@
+<!--
+Brief:	Launch file to start the CoRo Eyes pose estimation
+Date:	2021-10-07
+Email:	ab.alexandre.bernier@gmail.com
+-->
+<launch>
+	<!-- Constants -->
+	<arg name="left_image_topic" value="/coro_eyes/left/image"/>
+	
+	<!-- Camera calibration node -->
+	<node ns="coro_eyes" name="pose_estimation" pkg="coro_eyes_ros" type="pose_estimation" output="screen" required="true">
+		<param name="config_path" value="$(find coro_eyes_ros)/config"/>
+		<param name="left_image_topic" value="$(arg left_image_topic)"/>
+	</node>
+	
+	<!-- Camera feeds -->
+	<node ns="coro_eyes/left" name="camera_feed" pkg="image_view" type="image_view">
+		<param name="image" value="$(arg left_image_topic)"/>
+		<param name="window_name" value="Camera feed (left)"/>
+	</node>
+</launch>

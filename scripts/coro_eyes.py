@@ -12,6 +12,7 @@ def ask_for_command():
     display += '* Available commands *\n'
     display += '**********************\n'
     display += 's: Single scan\n'
+    display += 'v: Save last scan\n'
     display += 'q: Quit\n'
     display += '--> '
 
@@ -20,12 +21,14 @@ def ask_for_command():
 
 def post_processing(raw_point_cloud):
     # Filter outliers
-    new_point_cloud, ind = raw_point_cloud.remove_radius_outlier(nb_points=14, radius=0.005)
+    new_point_cloud, ind = raw_point_cloud.remove_radius_outlier(nb_points=100, radius=0.01)
 
     return new_point_cloud
 
 
 if __name__ == '__main__':
+    # Define variables
+    raw_o3d_point_cloud = post_o3d_point_cloud = open3d.geometry.PointCloud()
     # Init
     rospy.init_node('post_processing', anonymous=True, disable_signals=True)
     # Scan service
@@ -44,6 +47,13 @@ if __name__ == '__main__':
         # Quit
         if cmd == 'q':
             rospy.signal_shutdown("Shutting down CoRo Eyes application...")
+
+        # Save
+        if cmd == 'v':
+            if post_o3d_point_cloud.is_empty():
+                rospy.loginfo("Can't save point cloud. Previous scan is empty.\n")
+            else:
+                open3d.io.write_point_cloud("/home/alexandre/point_cloud.ply", post_o3d_point_cloud, write_ascii=True)
 
         # Single scan
         if cmd == 's':

@@ -45,6 +45,10 @@ include_directories(${catkin_INCLUDE_DIRS})
 add_executable(camera_calibration nodes/camera_calibration.cpp)
 target_link_libraries(camera_calibration ${catkin_LIBRARIES} coro_eyes_sdk)
 
+# Pose estimation node
+add_executable(pose_estimation nodes/pose_estimation.cpp)
+target_link_libraries(pose_estimation ${catkin_LIBRARIES} coro_eyes_sdk)
+
 # Adjust focus node
 add_executable(adjust_focus nodes/adjust_focus.cpp)
 target_link_libraries(adjust_focus ${catkin_LIBRARIES} coro_eyes_sdk)

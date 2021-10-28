@@ -18,4 +18,14 @@ Email:	ab.alexandre.bernier@gmail.com
 
     <!-- Visualizer node -->
     <node if="$(arg show_visualizer)" ns="coro_eyes" name="point_cloud_visualizer" pkg="coro_eyes_ros" type="pc_visualizer.py" output="screen" args="/coro_eyes/point_cloud"/>
+
+    <!-- tf static publishers -->
+    <node pkg="tf" type="static_transform_publisher" name="coro_eyes_table_broadcaster"
+        args="-0.241641 0.189972 0.676224
+              0.998855 0.003682 0.006412 0.047264
+        coro_eyes table 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="table_robot_broadcaster"
+        args="0.729 0.535 0
+        -1.5708 0 0
+        table robot 100"/>
 </launch>

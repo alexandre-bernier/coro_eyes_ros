@@ -31,9 +31,9 @@ if __name__ == '__main__':
     # Start visualizer
     vis = open3d.visualization.Visualizer()
     vis.create_window()
-    vis.get_view_control().set_front([0, 0.1, -1])
-    vis.get_view_control().set_lookat([-0.12, 0, 0.7])
-    vis.get_view_control().set_up([0, -1, -0.1])
+    vis.get_view_control().set_front([-0.005, 0.153, -0.988])
+    vis.get_view_control().set_lookat([0.133, -0.007, 0.744])
+    vis.get_view_control().set_up([0.002, -0.988, -0.153])
 
     # Loop
     while not rospy.is_shutdown():
