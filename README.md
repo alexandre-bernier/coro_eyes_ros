@@ -106,6 +106,10 @@ This should only be done once or if you wish to change the projected patterns.
 You most likely won't ever have to do this since patterns should already have been uploaded.
     
     roslaunch coro_eyes_ros upload_patterns.launch
+        
+## URDF
+
+A URDF is included in this package that puts a box around the physical CoRo Eyes hardware (including the protective acrylic sheet). The xacro file you need to include in your project is `urdf/coro_eyes.urdf.xacro`. You can find an example on how to inlucde the urdf in `urdf/coro_eyes_example.urdf.xacro` and `launch/load_urdf.launch`. The origin of the `coro_eyes_joint` should have the result of the `Pose estimation` node with the child being the user-defined reference frame used to compute the pose of the CoRo Eyes left camera.
 
 ## Bugs & Feature Requests
 
