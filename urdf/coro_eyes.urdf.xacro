@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<robot name="coro_eyes" xmlns:xacro="http://ros.org/wiki/xacro">
+	<xacro:macro name="coro_eyes" params="prefix">
+	
+		<material name="white">
+			<color rgba="1.0 1.0 1.0 1.0"/>
+		</material>
+	
+		<!-- Base -->
+		<link name="${prefix}coro_eyes"/>
+		<link name="${prefix}coro_eyes_base">
+			<visual>
+				<origin xyz="0 -0.0825 -0.025" rpy="0 0 0"/>
+				<geometry>
+					<box size="0.505 0.165 0.23"/>
+				</geometry>
+					<material name="white"/>
+			</visual>
+			<collision>
+				<origin xyz="0 -0.0825 -0.025" rpy="0 0 0"/>
+				<geometry>
+						<box size="0.505 0.165 0.23"/>
+				</geometry>
+			</collision>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<mass value="10"/>
+				<inertia ixx="1" ixy="0" ixz="0"
+					 iyx="0" iyy="1" iyz="0"
+					 izx="0" izy="0" izz="1"/>
+			</inertial>
+		</link>
+
+  		<joint name="coro_eyes_root" type="fixed">
+			<parent link="${prefix}coro_eyes"/>
+			<child link="${prefix}coro_eyes_base"/>
+			<origin xyz="0.1375 0.095 0.04" rpy="0 0 0"/>
+		</joint>
+		
+	</xacro:macro>
+</robot>

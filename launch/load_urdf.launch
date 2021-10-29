@@ -1,0 +1,13 @@
+<!--
+Brief:	Launch file to upload the CoRo Eyes urdf.
+Author: Alexandre Bernier
+Date:	2021-10-29
+Email:	ab.alexandre.bernier@gmail.com
+-->
+<launch>
+    <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
+    <param name="robot_description" command="xacro '$(find coro_eyes_ros)/urdf/coro_eyes_example.urdf.xacro'"/>
+
+    <!-- Robot state publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+</launch>

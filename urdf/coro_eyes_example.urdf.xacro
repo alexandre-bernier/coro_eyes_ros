@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<robot name="coro_eyes" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- WORLD -->
+    <link name="world"/>
+
+    <!-- Robot -->
+    <link name="robot"/>
+    <joint name="robot_joint" type="fixed">
+        <parent link="robot"/>
+        <child link="world"/>
+        <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+    </joint>
+
+    <!-- Table -->
+    <link name="table"/>
+    <joint name="table_robot_joint" type="fixed">
+        <parent link="table"/>
+        <child link="robot"/>
+        <origin xyz="0.729 0.535 0" rpy="0 0 -1.5708"/>
+    </joint>
+
+    <!-- CoRo Eyes -->
+    <xacro:include filename="$(find coro_eyes_ros)/urdf/coro_eyes.urdf.xacro"/>
+    <xacro:coro_eyes prefix=""/>
+    <joint name="coro_eyes_joint" type="fixed">
+        <parent link="coro_eyes"/>
+        <child link="table"/>
+        <origin xyz="-0.241641 0.189972 0.676224" rpy="3.0469772 -0.0124616 0.0079624"/>    <!-- Result of coro_eyes pose_estimation -->
+    </joint>
+
+</robot>
